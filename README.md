@@ -60,7 +60,7 @@ Quando um alerta é disparado no Zabbix, ele é enviado via HTTP POST para o Nod
 
 3. **Exemplo de Payload Enviado para o WLED**:
 
-   ![Exemplo de payload enviado para o WLED](Assets/payload com o padrão de cor enviado.png)
+   ![Exemplo de payload enviado para o WLED](Assets/payload-enviada.png)
 
 ## Licença
 
