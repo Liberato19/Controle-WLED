@@ -1,0 +1,190 @@
+
+[
+    {
+        "id": "9bc0db60b0fb182a",
+        "type": "tab",
+        "label": "Fluxo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e5fc92a631a29fe9",
+        "type": "http in",
+        "z": "9bc0db60b0fb182a",
+        "name": "Receber HTTP POST",
+        "url": "/zabbix-racks",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 270,
+        "y": 420,
+        "wires": [
+            [
+                "1ef6efd88c6ce33b",
+                "5d33f01190785c36",
+                "8cef73b5094a5424"
+            ]
+        ]
+    },
+    {
+        "id": "1ef6efd88c6ce33b",
+        "type": "http response",
+        "z": "9bc0db60b0fb182a",
+        "name": "Retorno HTTP 200",
+        "statusCode": "200",
+        "headers": {},
+        "x": 490,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "5d33f01190785c36",
+        "type": "mqtt out",
+        "z": "9bc0db60b0fb182a",
+        "name": "Publicar no MQTT",
+        "topic": "/Zabbix-Alerts",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "",
+        "x": 690,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "282a2f706420e632",
+        "type": "mqtt in",
+        "z": "9bc0db60b0fb182a",
+        "name": "",
+        "topic": "/Zabbix-Alerts",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 870,
+        "y": 420,
+        "wires": [
+            [
+                "4c7882fd8f6d79bb",
+                "f24b73fd99136dfb"
+            ]
+        ]
+    },
+    {
+        "id": "5ff830657a82507c",
+        "type": "mqtt out",
+        "z": "9bc0db60b0fb182a",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "",
+        "x": 1450,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d611f356d19f3236",
+        "type": "debug",
+        "z": "9bc0db60b0fb182a",
+        "name": "debug 11",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1470,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "ecb9b518b696fad3",
+        "type": "function",
+        "z": "9bc0db60b0fb182a",
+        "name": "function 11",
+        "func": "// Extrair grupo e alerta da msg.payload\nlet status = msg.payload.status;\nlet grupo = msg.payload.grupo;\nlet alerta = msg.payload.alerta;\n\n\n// Inicializar o tópico e payload\nlet topic = '';\nlet payload = '';\n\n// Verificar o grupo e definir o tópico\nif (grupo === \"Rack 1\") {\n    topic = '/wled/Rack1/api';\n} else if (grupo === \"Rack 2\") {\n    topic = '/wled/Rack2/api';\n} else if (grupo === \"Rack 3\") {\n    topic = '/wled/Rack3/api';\n} else if (grupo === \"Rack 4\") {\n    topic = '/wled/Rack4/api';\n} else if (grupo === \"Rack 5\") {\n    topic = '/wled/Rack5/api';\n} else if (grupo === \"Rack 6\") {\n    topic = '/wled/Rack6/api';\n} else if (grupo === \"Rack 7\") {\n    topic = '/wled/Rack7/api';\n} else if (grupo === \"Rack 8\") {\n    topic = '/wled/Rack8/api';\n} else {\n    topic = 'Tópico desconhecido'; // Caso o grupo não seja reconhecido\n}\n\n// Verificar o alerta e definir a payload\nif (alerta === \"Warning\" && status === \"PROBLEM\" || alerta === \"High\" && status === \"PROBLEM\") {\n    if (grupo === \"Rack 1\" || grupo === \"Rack 2\" || grupo === \"Rack 3\" || grupo === \"Rack 4\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":0,\"seg\":[{\"id\":0,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,0,0],[0,0,0],[0,0,0]],\"fx\":2,\"sx\":255,\"ix\":128,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack1 a Rack4\n    } else if (grupo === \"Rack 5\" || grupo === \"Rack 6\" || grupo === \"Rack 7\" || grupo === \"Rack 8\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":0,\"seg\":[{\"id\":0,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,0,0],[0,0,0],[0,0,0]],\"fx\":2,\"sx\":255,\"ix\":128,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack5 a Rack8\n    } \n} else if (alerta === \"Warning\" && status === \"OK\" || alerta === \"High\" && status === \"OK\") {    \n     if (grupo === \"Rack 1\" || grupo === \"Rack 2\" || grupo === \"Rack 3\" || grupo === \"Rack 4\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":2,\"seg\":[{\"id\":0,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[9,255,0],[0,0,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":194,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":1,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,0,13],[0,0,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":167,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":2,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[17,255,0],[8,255,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":28,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack1 a Rack4\n    } else if (grupo === \"Rack 5\" || grupo === \"Rack 6\" || grupo === \"Rack 7\" || grupo === \"Rack 8\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":1,\"seg\":[{\"id\":0,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":124,\"cct\":127,\"set\":0,\"col\":[[188,0,0],[255,0,0],[255,0,0]],\"fx\":50,\"sx\":0,\"ix\":255,\"pal\":50,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":1,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,255,255],[0,0,0],[0,255,34]],\"fx\":48,\"sx\":148,\"ix\":157,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":true,\"si\":0,\"m12\":1},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack5 a Rack8\n    }\n} else if (alerta === \"Average\" && status === \"PROBLEM\") {\n    if (grupo === \"Rack 1\" || grupo === \"Rack 2\" || grupo === \"Rack 3\" || grupo === \"Rack 4\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":0,\"seg\":[{\"id\":0,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"n\":\"\",\"col\":[[255,160,0],[0,0,0],[0,0,0]],\"fx\":2,\"sx\":255,\"ix\":128,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack1 a Rack4\n    } else if (grupo === \"Rack5\" || grupo === \"Rack 6\" || grupo === \"Rack 7\" || grupo === \"Rack 8\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":0,\"seg\":[{\"id\":0,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"n\":\"\",\"col\":[[255,160,0],[0,0,0],[0,0,0]],\"fx\":2,\"sx\":255,\"ix\":128,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack5 a Rack8\n    }\n} else if (alerta === \"Average\" && status === \"OK\") {    \n     if (grupo === \"Rack 1\" || grupo === \"Rack 2\" || grupo === \"Rack 3\" || grupo === \"Rack 4\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":2,\"seg\":[{\"id\":0,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[9,255,0],[0,0,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":194,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":1,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,0,13],[0,0,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":167,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":2,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[17,255,0],[8,255,0],[0,0,0]],\"fx\":50,\"sx\":100,\"ix\":28,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack1 a Rack4\n    } else if (grupo === \"Rack 5\" || grupo === \"Rack 6\" || grupo === \"Rack 7\" || grupo === \"Rack 8\") {\n        payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":1,\"seg\":[{\"id\":0,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":124,\"cct\":127,\"set\":0,\"col\":[[188,0,0],[255,0,0],[255,0,0]],\"fx\":50,\"sx\":0,\"ix\":255,\"pal\":50,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":false,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"id\":1,\"start\":0,\"stop\":160,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[255,255,255],[0,0,0],[0,255,34]],\"fx\":48,\"sx\":148,\"ix\":157,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":true,\"o3\":true,\"si\":0,\"m12\":1},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Grupos de Rack5 a Rack8\n    }    \n} else if (alerta === \"atualizacao\") {\n    payload = '{\"on\":true,\"bri\":128,\"transition\":7,\"mainseg\":0,\"seg\":[{\"id\":0,\"start\":0,\"stop\":40,\"grp\":1,\"spc\":0,\"of\":0,\"on\":true,\"frz\":false,\"bri\":255,\"cct\":127,\"set\":0,\"col\":[[0,255,200],[0,0,0],[0,0,0]],\"fx\":2,\"sx\":255,\"ix\":128,\"pal\":0,\"c1\":128,\"c2\":128,\"c3\":16,\"sel\":true,\"rev\":false,\"mi\":false,\"o1\":false,\"o2\":false,\"o3\":false,\"si\":0,\"m12\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0},{\"stop\":0}]}';  // Se o alerta for 'atualizacao'\n} else {\n    payload = \"Alerta desconhecido\";  // Caso o alerta não seja reconhecido\n}\n\n// Atribuir topic e payload ao objeto msg\nmsg.topic = topic;\nmsg.payload = payload;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1300,
+        "y": 420,
+        "wires": [
+            [
+                "5ff830657a82507c",
+                "d611f356d19f3236"
+            ]
+        ]
+    },
+    {
+        "id": "8cef73b5094a5424",
+        "type": "debug",
+        "z": "9bc0db60b0fb182a",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "4c7882fd8f6d79bb",
+        "type": "debug",
+        "z": "9bc0db60b0fb182a",
+        "name": "debug 13",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "f24b73fd99136dfb",
+        "type": "function",
+        "z": "9bc0db60b0fb182a",
+        "name": "function 12",
+        "func": "// Pega a mensagem original do payload\nlet input = msg.payload.message;\n\n// Remove as aspas extras e faz o parsing para um objeto JSON\nlet formattedString = input.replace(/\\\\\\\"/g, '\"');\nlet formattedObject = JSON.parse('{' + formattedString + '}');\n\n// Retorna a mensagem formatada\nmsg.payload = {\n    status: formattedObject.status,\n    grupo: formattedObject.grupo,\n    alerta: formattedObject.alerta\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1130,
+        "y": 420,
+        "wires": [
+            [
+                "ecb9b518b696fad3"
+            ]
+        ]
+    }
+]
