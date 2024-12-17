@@ -48,6 +48,20 @@ Quando um alerta é disparado no Zabbix, ele é enviado via HTTP POST para o Nod
 4. Configure o ESP32 com o firmware WLED para receber comandos MQTT.
 5. Teste o sistema gerando alertas no Zabbix e verificando a resposta no controle dos LEDs dos racks.
 
+## Imagens
+
+1. **Fluxo no Node-RED**: 
+
+   ![Tela do Node-RED com os fluxos](Assets/Node-red.png)
+
+2. **Exemplo de Payload Recebido pelo Zabbix**:
+
+   ![Exemplo de payload recebida pelo Zabbix](Assets/Payload%20Recebida.png)
+
+3. **Exemplo de Payload Enviado para o WLED**:
+
+   ![Exemplo de payload enviado para o WLED](Assets/Payload_Enviado.png)
+
 ## Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
@@ -57,3 +71,5 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 - `Node-RED`
 - `Zabbix`
 - `MQTT`
+- `WLED`
+- `ESP32`
