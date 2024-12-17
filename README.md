@@ -68,8 +68,8 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 ## Tags
 
-- `Node-RED`
-- `Zabbix`
-- `MQTT`
-- `WLED`
-- `ESP32`
+![Node-RED](https://img.shields.io/badge/Node--RED-8F5C5C?logo=node-red&logoColor=white&style=flat-square) 
+![Zabbix](https://img.shields.io/badge/Zabbix-DC143C?logo=zabbix&logoColor=white&style=flat-square) 
+![MQTT](https://img.shields.io/badge/MQTT-FFB6C1?logo=MQTT&logoColor=white&style=flat-square)
+![WLED](https://img.shields.io/badge/WLED-4B8B9B?logo=wled&logoColor=white&style=flat-square)
+![ESP32](https://img.shields.io/badge/ESP32-FF6F61?logo=esp32&logoColor=white&style=flat-square)
